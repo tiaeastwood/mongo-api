@@ -4,6 +4,7 @@ const { connectToDb, getDb } = require("./db");
 
 // init app and middleware
 const app = express();
+app.use(express.json());
 
 const PORT = 3000;
 
@@ -51,6 +52,19 @@ app.get("/cats/:id", (req, res) => {
 	} else {
 		res.status(500).json({ error: "Not a valid document id" });
 	}
+});
+
+app.post("/cats", (req, res) => {
+	const cat = req.body;
+
+	db.collection("cats")
+		.insertOne(cat)
+		.then((result) => {
+			res.status(201).json(result);
+		})
+		.catch((err) => {
+			res.status(500).json({ err: "Could not create a new document" });
+		});
 });
 
 // in node, find() returns a cursor, which points to the documents - you can then use toArray to put them in an array, or forEach to do something for each one
