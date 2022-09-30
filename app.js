@@ -1,6 +1,6 @@
-const express = require("express");
-const { ObjectId } = require("mongodb");
-const { connectToDb, getDb } = require("./db");
+import express from "express"
+import { ObjectId } from "mongodb"
+import { connectToDb, getDb } from "./db.js"
 
 // init app and middleware
 const app = express();
