@@ -82,4 +82,21 @@ app.delete("/cats/:id", (req, res) => {
 	}
 });
 
+app.patch("/cats/:id", (req, res) => {
+	const updates = req.body;
+
+	if (ObjectId.isValid(req.params.id)) {
+		db.collection("cats")
+			.updateOne({ _id: ObjectId(req.params.id) }, { $set: updates })
+			.then((doc) => {
+				res.status(200).json(doc);
+			})
+			.catch((err) => {
+				res.status(500).json({ error: "could not update the document" });
+			});
+	} else {
+		res.status(500).json({ error: "Not a valid document id" });
+	}
+});
+
 // in node, find() returns a cursor, which points to the documents - you can then use toArray to put them in an array, or forEach to do something for each one
