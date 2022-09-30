@@ -67,4 +67,19 @@ app.post("/cats", (req, res) => {
 		});
 });
 
+app.delete("/cats/:id", (req, res) => {
+	if (ObjectId.isValid(req.params.id)) {
+		db.collection("cats")
+			.deleteOne({ _id: ObjectId(req.params.id) })
+			.then((doc) => {
+				res.status(200).json(doc);
+			})
+			.catch((err) => {
+				res.status(500).json({ error: "could not delete the document" });
+			});
+	} else {
+		res.status(500).json({ error: "Not a valid document id" });
+	}
+});
+
 // in node, find() returns a cursor, which points to the documents - you can then use toArray to put them in an array, or forEach to do something for each one
