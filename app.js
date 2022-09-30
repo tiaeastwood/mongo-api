@@ -22,11 +22,16 @@ connectToDb((err) => {
 
 // routes
 app.get("/cats", (req, res) => {
+	const page = req.query.p || 0; // current page - use query parameter, or if there isn't one use 0 to get first page
+	const catsPerPage = 3; // how many items to show per page
+
 	let cats = [];
 
 	db.collection("cats")
 		.find()
 		.sort({ name: 1 })
+		.skip(page * catsPerPage)
+		.limit(catsPerPage)
 		.forEach((cat) => cats.push(cat))
 		.then(() => {
 			res.status(200).json(cats);
@@ -39,7 +44,6 @@ app.get("/cats", (req, res) => {
 app.get("/cats/:id", (req, res) => {
 	// only try to get the document if the id is valid
 	// if id is valid but doc doesnt exist, it will return null
-
 	if (ObjectId.isValid(req.params.id)) {
 		db.collection("cats")
 			.findOne({ _id: ObjectId(req.params.id) })
